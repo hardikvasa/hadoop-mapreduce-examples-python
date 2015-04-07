@@ -11,18 +11,15 @@ word = None
 for line in sys.stdin:    # input comes from STDIN
     line = line.strip()    # remove leading and trailing whitespace
 
-    word, count = line.split('\t', 1)    # parse the input we got from mapper.py
+    word, count = line.split('\t', 1)    # parse the input we got from mapper.py by a tab (space)
 
-    try:    # convert count (currently a string) to int
-        count = int(count)
+    try:    
+        count = int(count)     # convert count from string to int
     except ValueError:
-        # count was not a number, so silently
-        # ignore/discard this line
-        continue
+        continue        #If the count is not a number then discard the line by doing nothing
 
-    # this IF-switch only works because Hadoop sorts map output
-    # by key (here: word) before it is passed to the reducer
-    if current_word == word:
+
+    if current_word == word:      #comparing the current word with the previous word (since they are ordered by key (word))
         current_count += count
     else:
         if current_word:
@@ -31,6 +28,5 @@ for line in sys.stdin:    # input comes from STDIN
         current_count = count
         current_word = word
 
-# do not forget to output the last word if needed!
-if current_word == word:
+if current_word == word:    # do not forget to output the last word if needed!
     print '%s\t%s' % (current_word, current_count)
